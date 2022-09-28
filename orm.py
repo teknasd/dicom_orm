@@ -1,4 +1,5 @@
 from glob import glob
+import numpy as np
 
 class dcm_orm():
 
@@ -7,7 +8,7 @@ class dcm_orm():
         print(self.files)
         print("********")
         print("\n\n{count} files found".format(count = len(self.files)))
-        self.result= [1] * len(self.files)
+        self.result= np.array([1] * len(self.files))
 
 
     def filter(self,**args):
@@ -24,17 +25,15 @@ class dcm_orm():
                         res.append(1)
                     else:
                         res.append(0)
-        # print(res)
-        return res and self.result
+        res = np.array(res)
+        print(self.result)
+        print(res)
+        self.result = res & self.result
+        return np.array(res) & np.array(self.result)
 
 
 
 
-
-path = "/mnt/c/Users/tekna/Downloads"
-orm = dcm_orm(path)
-result = orm.filter(endswith = "dcm")
-print(result)
 
 
 
