@@ -3,12 +3,20 @@ import numpy as np
 
 class dcm_orm():
 
-    def __init__(self,path = None) -> None:
-        self.files = list(glob(path + "/**/*",recursive=False))
+    def __init__(self,path = None,recursive = True) -> None:
+        self.recursive = recursive
+        self.path = path
+        self.files = self._get_dicom_files()
         print(self.files)
         print("********")
         print("\n\n{count} files found".format(count = len(self.files)))
         self.result= np.array([1] * len(self.files))
+
+    def _get_dicom_files(self):
+        ''' 
+        this function fetches the dicom files from the path assuming file format is .dcm
+        '''
+        return list(glob(self.path + "/**/*.dcm",recursive=self.recursive))
 
 
     def filter(self,**args):
@@ -16,15 +24,12 @@ class dcm_orm():
         res = [0] * len(self.files)
         res = []
         for fil in self.files:
-            for key,val in args.items():
+            for key,val in args.items(): 
                 # print(arg)
                 if key == "endswith":
-                    if fil.endswith(val):
+                    res.append(self._filter_endswith(fil,key,val))
 
-                        print(fil)
-                        res.append(1)
-                    else:
-                        res.append(0)
+
         res = np.array(res)
         print(self.result)
         print(res)
@@ -34,6 +39,18 @@ class dcm_orm():
 
 
 
+
+    '''
+    define custom filters here
+    '''
+
+    def _filter_endswith(self,obj,key,val):
+        if obj.endswith(val):
+
+            print(obj)
+            return 1
+        else:
+            return 0
 
 
 
