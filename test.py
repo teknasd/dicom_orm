@@ -4,8 +4,8 @@ from orm import dcm_orm
 
 
 
-path = "/mnt/c/Users/tekna/Downloads"
-orm = dcm_orm(path,recursive = False)
-result = orm.filter(endswith = "dcm")
+path = "/mnt/c/Users/Sanket.deshpande/Documents/dicom_orm"
+orm = dcm_orm(path, recursive = True)
+result = orm.filter(endswith = ".py")
 print(result)
 

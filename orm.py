@@ -3,9 +3,10 @@ import numpy as np
 
 class dcm_orm():
 
-    def __init__(self,path = None,recursive = True) -> None:
+    def __init__(self,path = None, ext = "", recursive = True) -> None:
         self.recursive = recursive
         self.path = path
+        self.ext = ext
         self.files = self._get_dicom_files()
         print(self.files)
         print("********")
@@ -16,7 +17,7 @@ class dcm_orm():
         ''' 
         this function fetches the dicom files from the path assuming file format is .dcm
         '''
-        return list(glob(self.path + "/**/*.dcm",recursive=self.recursive))
+        return list(glob(self.path + "/**/*" + self.ext,recursive=self.recursive))
 
 
     def filter(self,**args):
@@ -31,10 +32,12 @@ class dcm_orm():
 
 
         res = np.array(res)
+        print(type(self.result))
+        print(type(res))
         print(self.result)
         print(res)
-        self.result = res & self.result
-        return np.array(res) & np.array(self.result)
+        self.result = (res & self.result)
+        return np.array(res) &  np.array(self.result)
 
 
 
