@@ -4,27 +4,27 @@ import numpy as np
 class dcm_orm():
 
     def __init__(self,path = None, ext = "", recursive = True) -> None:
-        self.recursive = recursive
-        self.path = path
-        self.ext = ext
-        self.files = self._get_dicom_files()
-        print(self.files)
+        self.RECURSIVE = recursive
+        self.PATH = path
+        self.EXT = ext
+        self.FILES = self._get_files()
+        print(self.FILES)
         print("********")
-        print("\n\n{count} files found".format(count = len(self.files)))
-        self.result= np.array([1] * len(self.files))
+        print("\n\n{count} files found".format(count = len(self.FILES)))
+        self.result= np.array([1] * len(self.FILES))
 
-    def _get_dicom_files(self):
+    def _get_files(self):
         ''' 
-        this function fetches the dicom files from the path assuming file format is .dcm
+        this function fetches the .EXT files from the path
         '''
-        return list(glob(self.path + "/**/*" + self.ext,recursive=self.recursive))
+        return list(glob(self.PATH + "/**/*" + self.EXT,recursive=self.RECURSIVE))
 
 
     def filter(self,**args):
         print(args)
-        res = [0] * len(self.files)
+        res = [0] * len(self.FILES)
         res = []
-        for fil in self.files:
+        for fil in self.FILES:
             for key,val in args.items(): 
                 # print(arg)
                 if key == "endswith":
@@ -37,11 +37,8 @@ class dcm_orm():
         print(self.result)
         print(res)
         self.result = (res & self.result)
-        return np.array(res) &  np.array(self.result)
-
-
-
-
+        self.print_output()
+        return self.result
 
     '''
     define custom filters here
@@ -54,6 +51,17 @@ class dcm_orm():
             return 1
         else:
             return 0
+
+
+    def print_output(self):
+        LEN = 50   
+        for fil,res in zip(self.FILES,self.result):
+            if len(fil)>LEN:
+                print(f"{fil[:int(LEN/2)]}...{fil[-int(LEN/2):]} -> {res}")
+            else:
+                print(f"{fil} -> {res}")
+
+                
 
 
 
