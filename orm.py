@@ -1,6 +1,7 @@
 from glob import glob
 import numpy as np
 from pprint import pprint
+
 # http://localhost:60848/?code=ad7310ee55d5afaca3b6&state=d4e466ff76d443159a51cafd6e5177d3
 class dcm_orm():
 
@@ -10,10 +11,19 @@ class dcm_orm():
         self.EXT = ext
         self.FILES = self._get_files()
         # pprint(self.FILES)
-        self.print_files()
+        # self.print_files()
         print("********")
         print("\n\n{count} files found".format(count = len(self.FILES)))
         self.result= np.array([1] * len(self.FILES))
+        # self.map = self.FILES
+
+    def __repr__(self):
+        # print("\n\n{count} files found".format(count = len(self.FILES)))
+        self.print_files()
+
+    def __str__(self):
+        return f"\n\n{len(self.FILES)} files found"
+        # self.print_files()
 
     def _get_files(self):
         ''' 
@@ -24,8 +34,13 @@ class dcm_orm():
 
     def filter(self,**args):
         print(args)
-        res = [0] * len(self.FILES)
         res = []
+        '''
+        Files -> N 
+        Filters -> F
+        complexity -> N*F 
+        '''
+        output = True
         for fil in self.FILES:
             for key,val in args.items(): 
                 # print(arg)
@@ -35,9 +50,6 @@ class dcm_orm():
                 
                 if key == "isfile":
                     output = output & self._filter_isfile(fil,key,val)
-
-
-
             res.append(output)
 
 
