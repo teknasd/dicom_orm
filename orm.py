@@ -1,6 +1,9 @@
 from glob import glob
 import numpy as np
 from pprint import pprint
+from pydicom import dcmread
+from helper import show_time
+import time
 
 # http://localhost:60848/?code=ad7310ee55d5afaca3b6&state=d4e466ff76d443159a51cafd6e5177d3
 class dcm_orm():
@@ -13,8 +16,9 @@ class dcm_orm():
         # pprint(self.FILES)
         # self.print_files()
         print("********")
-        print("\n\n{count} files found".format(count = len(self.FILES)))
+        print(f"\n\n{len(self.FILES)} unique paths detected")
         self.result= np.array([1] * len(self.FILES))
+        self.__time__ = 0
         # self.map = self.FILES
 
     def __repr__(self):
@@ -22,7 +26,7 @@ class dcm_orm():
         self.print_files()
 
     def __str__(self):
-        return f"\n\n{len(self.FILES)} files found"
+        return f"\n\n{len(self.FILES)} unique paths detected"
         # self.print_files()
 
     def _get_files(self):
@@ -41,6 +45,9 @@ class dcm_orm():
         complexity -> N*F 
         '''
         output = True
+
+        # profile filter
+        sttime = time.time()
         for fil in self.FILES:
             for key,val in args.items(): 
                 # print(arg)
@@ -51,16 +58,16 @@ class dcm_orm():
                 if key == "isfile":
                     output = output & self._filter_isfile(fil,key,val)
             res.append(output)
+        entime = time.time()
 
-
+        self.__time__ += show_time(sttime,entime,args)
+        
 
         res = np.array(res)
-        print(type(self.result))
-        print(type(res))
         print(self.result)
-        print(res)
+        # print(res)
         self.result = (res & self.result)
-        self.print_output()
+        # self.print_output()
         return self
 
     '''
@@ -95,6 +102,8 @@ class dcm_orm():
                 print(f"{en}->{fil[:int(LEN/2)]}...{fil[-int(LEN/2):]}")
             else:
                 print(f"{en}->{fil}")
+
+
 
 
                 
