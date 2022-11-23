@@ -1,8 +1,8 @@
 import time
-
+from logger import logging
 def show_time(sttime,entime,op=""):
-    print(f"sttime: {entime}")
-    print(f"entime: {sttime}")
-    print(f"Delta: {entime - sttime} secs for op: {op}")
+    logging.info(f"sttime: {entime}")
+    logging.info(f"entime: {sttime}")
+    logging.info(f"Delta: {entime - sttime} secs for op: {op}")
 
     return entime - sttime

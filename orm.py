@@ -4,7 +4,7 @@ from pprint import pprint
 from pydicom import dcmread
 from helper import show_time
 import time
-
+from logger import logging
 # http://localhost:60848/?code=ad7310ee55d5afaca3b6&state=d4e466ff76d443159a51cafd6e5177d3
 class dcm_orm():
 
@@ -15,10 +15,11 @@ class dcm_orm():
         self.FILES = self._get_files()
         # pprint(self.FILES)
         # self.print_files()
-        print("********")
-        print(f"\n\n{len(self.FILES)} unique paths detected")
+        logging.info("********")
+        logging.info(f"\n\n{len(self.FILES)} unique paths detected")
         self.result= np.array([1] * len(self.FILES))
-        self.__time__ = 0
+        self.__times__ = []
+        self.__cum_time__ = 0
         # self.map = self.FILES
 
     def __repr__(self):
@@ -37,7 +38,9 @@ class dcm_orm():
 
 
     def filter(self,**args):
-        print(args)
+        logging.info("\n\n--- start ---")
+        # logging.info(f"alredy result \n{self.result}")
+        logging.info(args)
         res = []
         '''
         Files -> N 
@@ -59,15 +62,16 @@ class dcm_orm():
                     output = output & self._filter_isfile(fil,key,val)
             res.append(output)
         entime = time.time()
-
-        self.__time__ += show_time(sttime,entime,args)
+        self.__times__.append(show_time(sttime,entime,args))
+        # self.__cum_time__ = np.sum(self.__times__)
         
 
         res = np.array(res)
-        print(self.result)
-        # print(res)
+        # logging.info(res)
         self.result = (res & self.result)
-        # self.print_output()
+        # self.logging.info_output()
+        # logging.info(self.result)
+        logging.info("\n\n--- end ---")
         return self
 
     '''
@@ -76,7 +80,7 @@ class dcm_orm():
 
     def _filter_endswith(self,obj,key,val):
         if obj.endswith(val):
-            # print(obj)
+            # logging.info(obj)
             return 1
         else:
             return 0
@@ -91,17 +95,17 @@ class dcm_orm():
         LEN = 100   
         for fil,res in zip(self.FILES,self.result):
             if len(fil)>LEN:
-                print(f"{fil[:int(LEN/2)]}...{fil[-int(LEN/2):]} -> {res}")
+                logging.info(f"{fil[:int(LEN/2)]}...{fil[-int(LEN/2):]} -> {res}")
             else:
-                print(f"{fil} -> {res}")
+                logging.info(f"{fil} -> {res}")
 
     def print_files(self):
         LEN = 100   
         for en,fil in enumerate(self.FILES):
             if len(fil)>LEN:
-                print(f"{en}->{fil[:int(LEN/2)]}...{fil[-int(LEN/2):]}")
+                logging.info(f"{en}->{fil[:int(LEN/2)]}...{fil[-int(LEN/2):]}")
             else:
-                print(f"{en}->{fil}")
+                logging.info(f"{en}->{fil}")
 
 
 
